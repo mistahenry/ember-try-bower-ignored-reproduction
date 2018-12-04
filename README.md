@@ -1,49 +1,29 @@
 ember-try-bower-ignored-reproduction
 ==============================================================================
 
-[Short description of the addon.]
+Simple Addon repo to reproduce problem with ember-try when using a `bower` supplied version of ember. 
 
-Installation
+
+Reproduction
 ------------------------------------------------------------------------------
+
+It's important to first have an `ember-source` version in your `node_modules`. Make sure to `yarn install` before running:
+
+`ember try:each`
+
+In `tests/acceptance/application-test`, I have this test:
 
 ```
-ember install ember-try-bower-ignored-reproduction
+test('visiting /', async function(assert) {
+    await visit('/');
+    assert.ok(window.Ember.VERSION);
+    assert.equal(window.Ember.VERSION, "2.4.6");
+});
 ```
 
+Since that's what `lts-2-4` currently resolves to. You'll notice when running that `Ember.VERSION` resolves to `3.5.1`in the `ember-lts-2.4` test which uses a `bower` ember dependency. In the `ember-lts-2.18` version, which uses `ember-source` supplied by `npm`, `Ember.VERSION` is correct for `2.18`
 
-Usage
-------------------------------------------------------------------------------
-
-[Longer description of how to use the addon in apps.]
-
-
-Contributing
-------------------------------------------------------------------------------
-
-### Installation
-
-* `git clone <repository-url>`
-* `cd ember-try-bower-ignored-reproduction`
-* `npm install`
-
-### Linting
-
-* `npm run lint:hbs`
-* `npm run lint:js`
-* `npm run lint:js -- --fix`
-
-### Running tests
-
-* `ember test` – Runs the test suite on the current Ember version
-* `ember test --server` – Runs the test suite in "watch mode"
-* `ember try:each` – Runs the test suite against multiple Ember versions
-
-### Running the dummy application
-
-* `ember serve`
-* Visit the dummy application at [http://localhost:4200](http://localhost:4200).
-
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+If you then remove `ember-source` from this addon's `devDependencies`, the first test for `lts-2-4` will pass.
 
 License
 ------------------------------------------------------------------------------
